@@ -1,8 +1,7 @@
 package com.exed1on.unitgbot.bot;
 
 import lombok.Getter;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.event.ContextRefreshedEvent;
 import org.springframework.context.event.EventListener;
 import org.springframework.stereotype.Component;
@@ -11,23 +10,22 @@ import org.telegram.telegrambots.updatesreceivers.DefaultBotSession;
 
 @Getter
 @Component
+@Slf4j
 public class BotInitializer {
 
-    private static final Logger logger = LoggerFactory.getLogger(BotInitializer.class);
+    private final UniBot uniBot;
 
-    private final TiktokSenderBot tiktokSenderBot;
-
-    public BotInitializer(TiktokSenderBot tiktokSenderBot) {
-        this.tiktokSenderBot = tiktokSenderBot;
+    public BotInitializer(UniBot uniBot) {
+        this.uniBot = uniBot;
     }
 
     @EventListener({ContextRefreshedEvent.class})
     public void init() {
         try {
             TelegramBotsApi telegramBotsApi = new TelegramBotsApi(DefaultBotSession.class);
-            telegramBotsApi.registerBot(tiktokSenderBot);
+            telegramBotsApi.registerBot(uniBot);
         } catch (Exception e) {
-            logger.error("Error while initializing bot", e);
+            log.error("Error while initializing bot", e);
         }
     }
 }
